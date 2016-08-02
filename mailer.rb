@@ -47,12 +47,17 @@ end
 post '/' do
   public_token = params['public_token'].to_sym
   account_configuration = accounts[public_token]
-
+  
   redirect '/error' unless account_configuration
+
+  # redirect account_configuration[:account][:after_failure]
 
   ActionMailer::Base.smtp_settings = account_configuration[:smtp]
 
   Mailer.notification(params, account_configuration[:account]).deliver_now
+  after_success = params.fetch("after_success", account_configuration[:account][:after_success])
+  redirect after_success
+
 end
 
 get '/' do
