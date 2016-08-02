@@ -7,6 +7,8 @@ require 'active_support/core_ext/object/blank.rb'
 require 'action_mailer'
 require 'uri'
 require 'base64'
+require 'yaml'
+require 'haml'
 
 enable :sessions
 
@@ -45,12 +47,21 @@ class Mailer < ActionMailer::Base
   end
 end
 
+accounts = YAML.load_file('accounts.yaml')
+
 configure do
   enable :cross_origin
 end
 
 post '/' do
-  Mailer.notification(params).deliver
+  public_token = params['public_token']
+  actionmailer_configuration = accounts[public_token]
+
+  redirect '/error' unless actionmailer_configuration
+
+  ActionMailer::Base.smtp_settings = actionmailer_configuration
+
+  Mailer.notification(params).deliver_now
 end
 
 get '/' do
@@ -60,6 +71,10 @@ get '/' do
   payload = Rack::Utils.parse_nested_query payloadStr
   puts payload.inspect
 
-  Mailer.notification(payload)
+  Mailer.notification(payload).deliver_now
   jsonp [{success: 'Message Sent'}], params['callback']
+end
+
+get '/error' do
+  haml :error
 end

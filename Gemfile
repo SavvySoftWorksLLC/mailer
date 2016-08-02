@@ -10,6 +10,8 @@ gem 'sinatra-contrib'
 gem 'sinatra-cross_origin'
 gem 'sinatra-jsonp'
 
+gem 'haml'
+
 gem 'rake'
 
 gem 'byebug'
