@@ -51,8 +51,6 @@ end
 
 post '/' do
   Mailer.notification(params).deliver
-
-  redirect 'http://localhost:4567/#contact'
 end
 
 get '/' do
