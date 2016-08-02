@@ -1,0 +1,12 @@
+default: &default
+  address: a
+  port: 600
+  domain: example.com
+  authentication: :plain
+  user_name: hey
+  password: nope
+  enable_starttls_auto: true
+aahomeinspec:
+  <<: *default
+engandinsp:
+  <<: *default
