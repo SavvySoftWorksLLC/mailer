@@ -9,20 +9,12 @@
 
   <content>
     <table>
-      <tr>
-        <td>Name:</td>
-        <td><%= @form_data['name'] %></td>
-      </tr>
-      <tr>
-        <td>Email:</td>
-        <td><%= @form_data['email'] %></td>
-      </tr>
-      <tr>
-        <td>Message</td>
-      </tr>
-      <tr>
-        <td><%= @form_data['textarea'] %></td>
-      </tr>
+      <% @form_data.each do | key, value | %>
+        <tr>
+          <td><%= key %>:&nbsp;</td>
+          <td><%= value %></td>
+        </tr>
+      <% end %>
     </table>
   </content>
   <footer>
