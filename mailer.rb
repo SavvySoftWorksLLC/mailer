@@ -23,13 +23,13 @@ class Mailer < ActionMailer::Base
   default from: 'paul@savvysoftworks.com'
   layout false
 
-  def notification(form_data)
+  def notification(form_data, account_info)
 
     @form_data = form_data
     @time = Time.now.getutc
 
-    mail(to: 'paul@savvysoftworks.com',
-         subject: "New message from #{@form_data['email']}",
+    mail(to: account_info[:to],
+         subject: "New message from #{account_info[:website]}",
          template_path: 'mailer',
          template_name: 'notification',
          content_type: 'text/html'
@@ -46,13 +46,13 @@ end
 
 post '/' do
   public_token = params['public_token'].to_sym
-  actionmailer_configuration = accounts[public_token]
+  account_configuration = accounts[public_token]
 
-  redirect '/error' unless actionmailer_configuration
+  redirect '/error' unless account_configuration
 
-  ActionMailer::Base.smtp_settings = actionmailer_configuration
+  ActionMailer::Base.smtp_settings = account_configuration[:smtp]
 
-  Mailer.notification(params).deliver_now
+  Mailer.notification(params, account_configuration[:account]).deliver_now
 end
 
 get '/' do
