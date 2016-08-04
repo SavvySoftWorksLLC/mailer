@@ -13,7 +13,7 @@ require 'haml'
 enable :sessions
 
 configure do
-  set :server, :puma
+#  set :server, :puma
   set :bind, '0.0.0.0'
   set :port, 80
   enable :cross_origin
