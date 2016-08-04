@@ -24,6 +24,5 @@ RUN bundle install --without development test
 
 COPY . /usr/src/app
 
-EXPOSE 3000
 EXPOSE 80
 CMD ["ruby", "mailer.rb"]
