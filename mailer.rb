@@ -11,8 +11,11 @@ require 'yaml'
 require 'haml'
 
 enable :sessions
-
-set :port, 9494
+configure do
+  set :server, :puma
+  set :port, 80
+  enable :cross_origin
+end
 
 ActionMailer::Base.raise_delivery_errors = true
 ActionMailer::Base.delivery_method = :smtp
@@ -38,16 +41,11 @@ class Mailer < ActionMailer::Base
 end
 
 accounts = YAML.load_file('accounts.yaml').deep_symbolize_keys!
-puts accounts.inspect
-
-configure do
-  enable :cross_origin
-end
 
 post '/' do
   public_token = params['public_token'].to_sym
   account_configuration = accounts[public_token]
-  
+
   redirect '/error' unless account_configuration
 
   # redirect account_configuration[:account][:after_failure]

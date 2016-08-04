@@ -17,3 +17,5 @@ gem 'rake'
 gem 'byebug'
 
 gem 'mailcatcher'
+
+gem 'puma'
