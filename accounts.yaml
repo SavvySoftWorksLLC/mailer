@@ -1,0 +1,17 @@
+default: &default
+  smtp:
+    address: a
+    port: 600
+    authentication: :plain
+    user_name: hey
+    password: nope
+    enable_starttls_auto: true
+  account:
+    website: http://savvysoftworks.com
+    to: 'noreply@savvysoftworks.com'
+    after_success: http://localhost:8000/success.html
+    after_failure: http://localhost:8000/failure.html
+aahomeinspec:
+  <<: *default
+engandinsp:
+  <<: *default
