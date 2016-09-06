@@ -9,6 +9,7 @@ require 'uri'
 require 'base64'
 require 'yaml'
 require 'haml'
+require 'cgi'
 
 enable :sessions
 
@@ -63,7 +64,7 @@ get '/' do
   payloadStr = Base64.decode64(params['payload'])
   puts payloadStr
 
-  payload = Rack::Utils.parse_nested_query payloadStr
+  payload = CGI::parse payloadStr
   puts payload.inspect
 
   Mailer.notification(payload).deliver_now
