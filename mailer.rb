@@ -62,12 +62,13 @@ end
 
 get '/' do
   payloadStr = Base64.decode64(params['payload'])
-  puts payloadStr
-
   payload = CGI::parse payloadStr
-  puts payload.inspect
+  public_token = params['public_token'].first.to_sym
+  account_configuration = accounts[public_token]
 
-  Mailer.notification(payload).deliver_now
+  ActionMailer::Base.smtp_settings = account_configuration[:smtp]
+
+  Mailer.notification(payload, account_configuration[:account]).deliver_now
   jsonp [{success: 'Message Sent'}], params['callback']
 end
 
