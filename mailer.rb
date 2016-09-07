@@ -63,7 +63,7 @@ end
 get '/' do
   payloadStr = Base64.decode64(params['payload'])
   payload = CGI::parse payloadStr
-  public_token = params['public_token'].first.to_sym
+  public_token = payload['public_token'].first.to_sym
   account_configuration = accounts[public_token]
 
   ActionMailer::Base.smtp_settings = account_configuration[:smtp]
