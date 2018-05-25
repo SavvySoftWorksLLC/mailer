@@ -19,7 +19,7 @@ class MyTest < MiniTest::Test
     post '/', { public_token: 'default',
                 name: 'butt',
                 email: 'butt@tp.com',
-                textarea: 'hi smelly',
+                verify: '',
                 action: 'value' }
 
     assert last_response.ok?
@@ -30,10 +30,10 @@ class MyTest < MiniTest::Test
   end
 
   def test_mailer_redirects_to_error_without_configured_account
-    post '/', {name: 'butt',
-               email: 'butt@tp.com',
-               textarea: 'hi smelly',
-               action: 'value'}
+    post '/', { name: 'butt',
+                email: 'butt@tp.com',
+                verify: '',
+                action: 'value' }
 
     assert last_response.redirect?
     follow_redirect!
@@ -44,7 +44,7 @@ class MyTest < MiniTest::Test
     post '/', { public_token: 'no-account',
                 name: 'butt',
                 email: 'butt@tp.com',
-                textarea: 'hi smelly',
+                verify: '',
                 action: 'value' }
 
     assert last_response.redirect?

@@ -54,10 +54,12 @@ post '/' do
 
   ActionMailer::Base.smtp_settings = account_configuration[:smtp]
 
-  Mailer.notification(params, account_configuration[:account]).deliver_now
+  if params['verify'].nil? || params['verify'].empty?
+    Mailer.notification(params, account_configuration[:account]).deliver_now
+  end
+
   after_success = params.fetch("after_success", account_configuration[:account][:after_success])
   redirect after_success
-
 end
 
 get '/' do
