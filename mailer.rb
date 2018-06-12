@@ -49,12 +49,13 @@ else
 end
 
 post '/' do
-
-
-  # redirect account_configuration[:account][:after_failure]
+  if params['public_token']
     public_token = params['public_token'].to_sym
     account_configuration = settings.accounts[public_token]
     redirect '/error' unless account_configuration
+  else
+    redirect '/error'
+  end
 
   ActionMailer::Base.smtp_settings = account_configuration[:smtp]
 

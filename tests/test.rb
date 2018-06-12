@@ -21,14 +21,46 @@ class MyTest < MiniTest::Test
     post '/', { public_token: 'default',
                 name: 'butt',
                 email: 'butt@tp.com',
+                text_area: 'hi smelly',
                 verify: '',
                 action: 'value' }
 
-    assert last_response.ok?
+    assert last_response.redirect?
+    assert_includes last_response.location, 'success.html'
+
     delivered_email = ActionMailer::Base.deliveries.last
-    assert_includes delivered_email.to, 'paul@savvysoftworks.com'
+    assert_includes delivered_email.to, 'noreply@savvysoftworks.com'
     assert_includes delivered_email.body, 'hi smelly'
-    assert_includes delivered_email.subject, 'butt@tp.com'
+    assert_includes delivered_email.subject, 'http://savvysoftworks.com'
+  end
+
+  def test_mailer_nill_verify
+    post '/', { public_token: 'default',
+                name: 'butt',
+                email: 'butt@tp.com',
+                text_area: 'hi smelly',
+                action: 'value' }
+
+    assert last_response.redirect?
+    assert_includes last_response.location, 'success.html'
+
+    delivered_email = ActionMailer::Base.deliveries.last
+    assert_includes delivered_email.to, 'noreply@savvysoftworks.com'
+    assert_includes delivered_email.body, 'hi smelly'
+    assert_includes delivered_email.subject, 'http://savvysoftworks.com'
+  end
+
+  def test_mailer_with_verification_filled_in
+    post '/', { public_token: 'default',
+                name: 'butt',
+                email: 'butt@tp.com',
+                text_area: 'hi smelly',
+                verify: 'I am a robot',
+                action: 'value' }
+
+    assert last_response.redirect?
+    delivered_email = ActionMailer::Base.deliveries.last
+    assert_nil delivered_email
   end
 
   def test_mailer_redirects_to_error_without_configured_account
