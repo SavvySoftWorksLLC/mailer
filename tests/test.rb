@@ -6,7 +6,9 @@ class MyTest < MiniTest::Test
   include Rack::Test::Methods
 
   def app
-    Sinatra::Application
+    app = Sinatra::Application
+    app.set :accounts, YAML.load_file('example.accounts.yaml').deep_symbolize_keys!
+    app
   end
 
   def setup
