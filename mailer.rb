@@ -42,29 +42,36 @@ class Mailer < ActionMailer::Base
   end
 end
 
-accounts = YAML.load_file('accounts.yaml').deep_symbolize_keys!
+if File.exists? 'accounts.yaml'
+  set :accounts, YAML.load_file('accounts.yaml').deep_symbolize_keys!
+else
+  set :accounts, {}
+end
 
 post '/' do
-  public_token = params['public_token'].to_sym
-  account_configuration = accounts[public_token]
-
-  redirect '/error' unless account_configuration
-
-  # redirect account_configuration[:account][:after_failure]
+  if params['public_token']
+    public_token = params['public_token'].to_sym
+    account_configuration = settings.accounts[public_token]
+    redirect '/error' unless account_configuration
+  else
+    redirect '/error'
+  end
 
   ActionMailer::Base.smtp_settings = account_configuration[:smtp]
 
-  Mailer.notification(params, account_configuration[:account]).deliver_now
+  if params['verify'].nil? || params['verify'].empty?
+    Mailer.notification(params, account_configuration[:account]).deliver_now
+  end
+
   after_success = params.fetch("after_success", account_configuration[:account][:after_success])
   redirect after_success
-
 end
 
 get '/' do
   payloadStr = Base64.decode64(params['payload'])
   payload = CGI::parse payloadStr
   public_token = payload['public_token'].first.to_sym
-  account_configuration = accounts[public_token]
+  account_configuration = settings.accounts[public_token]
 
   ActionMailer::Base.smtp_settings = account_configuration[:smtp]
 
